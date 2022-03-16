@@ -4,7 +4,8 @@
 
 *.sln
 *.user
-*.vcxproj
-/.vs/*
-/obj/*
-/bin/*
+**.vcxproj
+**.vcxproj.*
+.vs/
+obj/
+bin/
