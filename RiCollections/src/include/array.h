@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 namespace rilib::collections
 {
 
@@ -7,7 +9,7 @@ namespace rilib::collections
 	class array_iterator
 	{
 	public:
-		using val_t = typename array::T;
+		using val_t = typename array::val_t;
 		using ptr_t = val_t*;
 		using ref_t = val_t&;
 
@@ -71,21 +73,45 @@ namespace rilib::collections
 	};
 
 
-	template<typename T, size_t m_size>
+	template<typename T, const size_t m_size>
 	class array
 	{
 	public:
+		using val_t = T;
 		using iterator = array_iterator<array<T, m_size>>;
 
 	public:
+
+		array() {}
+
+		array(const T& initial_value)
+		{
+			std::fill(begin(), end(), initial_value);
+		}
+
+		array(const T* data)
+		{
+			memcpy(m_data, data, m_size * sizeof(T));
+		}
+
+		array(const T(&init)[m_size])
+		{
+			memcpy(m_data, init, m_size * sizeof(T));
+		}
+
+		array(T* data)
+		{
+			m_data = data;
+		}
+
 		const T& operator[](size_t index) const { return m_data[index]; }
 
 		T& operator[](size_t index) { return m_data[index]; }
 
 		T* data() { return m_data; }
-		const T* data() const { return m_data; }
+		[[nodiscard]] const T* data() const { return m_data; }
 
-		[[nodiscard("Pure function")]] constexpr size_t size() const { return m_size; }
+		[[nodiscard]] constexpr size_t size() const { return m_size; }
 
 		iterator begin()
 		{
@@ -96,6 +122,8 @@ namespace rilib::collections
 		{
 			return array_iterator<array<T, m_size>>(m_data + m_size);
 		}
+
+
 
 
 	private:
